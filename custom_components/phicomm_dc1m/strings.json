@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up AirCat",
+        "description": "Configure your AirCat air quality sensors.\\n\\nEnter MAC addresses in the format: MAC=Name (one per line).\\nExample: AABBCCDDEEFF=Living Room",
+        "data": {
+          "name": "Name",
+          "macs": "MAC Addresses",
+          "brightness_force_update": "Force brightness update every 5 minutes",
+          "sensor_types": "Sensors to expose"
+        }
+      }
+    },
+    "error": {
+      "no_macs": "Please enter at least one valid MAC address"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AirCat Options",
+        "description": "Update your AirCat configuration.",
+        "data": {
+          "macs": "MAC Addresses",
+          "brightness_force_update": "Force brightness update every 5 minutes",
+          "sensor_types": "Sensors to expose"
+        }
+      }
+    },
+    "error": {
+      "no_macs": "Please enter at least one valid MAC address"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "value": {
+        "name": "PM2.5"
+      },
+      "hcho": {
+        "name": "HCHO"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "humidity": {
+        "name": "Humidity"
+      }
+    }
+  }
+}
