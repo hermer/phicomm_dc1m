@@ -3,9 +3,9 @@
     "step": {
       "user": {
         "title": "Set up AirCat",
-        "description": "Configure your AirCat air quality sensors.\\n\\nEnter MAC addresses in the format: MAC=Name (one per line).\\nExample: AABBCCDDEEFF=Living Room",
+        "description": "Configure your AirCat air quality sensors.\\n\\nEnter MAC addresses in the format: MAC=input_select_name (one per line).\\nExample: AABBCCDDEEFF=living_room_aircat",
         "data": {
-          "name": "Name",
+          "name": "Device Name Prefix",
           "macs": "MAC Addresses",
           "brightness_force_update": "Force brightness update every 5 minutes",
           "sensor_types": "Sensors to expose"
@@ -25,6 +25,7 @@
         "title": "AirCat Options",
         "description": "Update your AirCat configuration.",
         "data": {
+          "name": "Device Name Prefix",
           "macs": "MAC Addresses",
           "brightness_force_update": "Force brightness update every 5 minutes",
           "sensor_types": "Sensors to expose"

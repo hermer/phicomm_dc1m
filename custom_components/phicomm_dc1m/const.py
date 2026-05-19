@@ -6,6 +6,7 @@ DOMAIN = "phicomm_dc1m"
 PLATFORMS = [Platform.SENSOR]
 
 CONF_MACS = "macs"
+CONF_NAME = "name"
 CONF_BFU = "brightness_force_update"
 CONF_SENSOR_TYPES = "sensor_types"
 

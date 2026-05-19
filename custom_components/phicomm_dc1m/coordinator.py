@@ -13,7 +13,8 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
-    BRIGHTNESS_MAP,
+    BRIGHTNESS_NIGHT,
+    BRIGHTNESS_OFF,
     CONF_BFU,
     CONF_MACS,
     DEFAULT_PORT,
@@ -36,8 +37,10 @@ class AirCatCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
             always_update=False,
         )
         self.entry = entry
-        self._macs: dict[str, str] = entry.options.get(CONF_MACS, entry.data.get(CONF_MACS, {}))
-        self._brightness_force_update: bool = entry.options.get(CONF_BFU, entry.data.get(CONF_BFU, False))
+        # Merge data + options so options updates take effect after reload
+        config = {**entry.data, **entry.options}
+        self._macs: dict[str, str] = config.get(CONF_MACS, {})
+        self._brightness_force_update: bool = config.get(CONF_BFU, False)
         self._last_brightness: dict[str, str] = {}
         self._last_brightness_time: dict[str, float] = {}
         self._server: asyncio.Server | None = None
@@ -184,7 +187,13 @@ class AirCatCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
                 self._last_brightness[mac] = brightness
                 self._last_brightness_time[mac] = time.time()
 
-                level = BRIGHTNESS_MAP.get(brightness, 80)
+                if BRIGHTNESS_OFF in brightness:
+                    level = 0
+                elif BRIGHTNESS_NIGHT in brightness:
+                    level = 50
+                else:
+                    level = 80
+
                 json_payload = json.dumps(
                     {"brightness": str(round(float(level))), "type": 2}
                 ).encode("utf-8")

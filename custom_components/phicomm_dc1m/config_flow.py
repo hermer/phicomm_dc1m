@@ -23,6 +23,7 @@ from homeassistant.helpers.selector import (
 from .const import (
     CONF_BFU,
     CONF_MACS,
+    CONF_NAME,
     CONF_SENSOR_TYPES,
     DEFAULT_NAME,
     DOMAIN,
@@ -59,8 +60,9 @@ class AirCatConfigFlow(ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured()
 
                 return self.async_create_entry(
-                    title=user_input.get("name", DEFAULT_NAME),
+                    title=user_input.get(CONF_NAME, DEFAULT_NAME),
                     data={
+                        CONF_NAME: user_input.get(CONF_NAME, DEFAULT_NAME),
                         CONF_MACS: macs,
                         CONF_BFU: user_input.get(CONF_BFU, False),
                         CONF_SENSOR_TYPES: user_input.get(
@@ -73,7 +75,7 @@ class AirCatConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Optional("name", default=DEFAULT_NAME): TextSelector(
+                    vol.Optional(CONF_NAME, default=DEFAULT_NAME): TextSelector(
                         TextSelectorConfig(type=TextSelectorType.TEXT)
                     ),
                     vol.Required(CONF_MACS): TextSelector(
@@ -143,6 +145,7 @@ class AirCatOptionsFlow(OptionsFlow):
                 return self.async_create_entry(
                     title="",
                     data={
+                        CONF_NAME: user_input.get(CONF_NAME, DEFAULT_NAME),
                         CONF_MACS: macs,
                         CONF_BFU: user_input.get(CONF_BFU, False),
                         CONF_SENSOR_TYPES: user_input.get(
@@ -158,6 +161,10 @@ class AirCatOptionsFlow(OptionsFlow):
             step_id="init",
             data_schema=vol.Schema(
                 {
+                    vol.Optional(
+                        CONF_NAME,
+                        default=self.config_entry.data.get(CONF_NAME, DEFAULT_NAME),
+                    ): TextSelector(TextSelectorConfig(type=TextSelectorType.TEXT)),
                     vol.Required(CONF_MACS, default=macs_text): TextSelector(
                         TextSelectorConfig(
                             type=TextSelectorType.TEXT,

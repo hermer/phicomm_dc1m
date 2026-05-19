@@ -22,7 +22,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import CONF_MACS, CONF_SENSOR_TYPES, DOMAIN, SENSOR_TYPES
+from .const import CONF_MACS, CONF_NAME, CONF_SENSOR_TYPES, DEFAULT_NAME, DOMAIN, SENSOR_TYPES
 from .coordinator import AirCatCoordinator
 from . import AirCatConfigEntry
 
@@ -53,11 +53,14 @@ async def async_setup_entry(
 ) -> None:
     """Set up AirCat sensor based on a config entry."""
     coordinator = entry.runtime_data
-    macs: dict[str, str] = entry.data.get(CONF_MACS, {})
-    sensors: list[str] = entry.data.get(CONF_SENSOR_TYPES, list(SENSOR_TYPES.keys()))
+    # Merge data + options so options updates take effect after reload
+    config = {**entry.data, **entry.options}
+    macs: dict[str, str] = config.get(CONF_MACS, {})
+    sensors: list[str] = config.get(CONF_SENSOR_TYPES, list(SENSOR_TYPES.keys()))
+    name: str = config.get(CONF_NAME, DEFAULT_NAME)
 
     entities: list[AirCatSensor] = []
-    for idx, (mac, name) in enumerate(macs.items()):
+    for idx, mac in enumerate(macs):
         display_name = name if idx == 0 else f"{name} {idx + 1}"
         for sensor_type in sensors:
             if sensor_type in SENSOR_DESCRIPTIONS:
@@ -114,7 +117,7 @@ class AirCatSensor(CoordinatorEntity[AirCatCoordinator], SensorEntity):
 
         try:
             if self._sensor_type == "value":  # PM2.5
-                return int(state)
+                return int(float(state))
             elif self._sensor_type == "hcho":
                 return round(float(state) / 1000, 3)
             else:
