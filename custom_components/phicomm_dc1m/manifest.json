@@ -1,6 +1,6 @@
 {
   "domain": "phicomm_dc1m",
-  "name": "AirCat",
+  "name": "dc1",
   "codeowners": ["@yinjiong"],
   "config_flow": true,
   "dependencies": [],
