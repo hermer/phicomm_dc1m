@@ -80,7 +80,7 @@ class AirCatCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
 
         try:
             while not self._shutdown:
-                data = await reader.read(4096)
+                data = await asyncio.wait_for(reader.read(4096), timeout=1.0)
                 if not data:
                     break
 
@@ -140,7 +140,7 @@ class AirCatCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
                 self.async_set_updated_data(self.devs.copy())
             except (UnicodeDecodeError, json.JSONDecodeError):
                 _LOGGER.error("Received invalid JSON: %s", data)
-                return
+                # Keep mac empty and continue to send ack response (matches original behavior)
 
         response = self._build_response(mac, data, payload, end)
         writer.write(response)
@@ -153,7 +153,7 @@ class AirCatCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
         """Build response payload for device."""
         header = data[payload - 28 : payload - 5]
 
-        if mac and mac in self._macs:
+        if mac and self._macs.get(mac):
             entity_id = f"input_select.{self._macs[mac]}"
             brightness_state = self.hass.states.get(entity_id)
             brightness = brightness_state.state if brightness_state else ""
@@ -195,7 +195,8 @@ class AirCatCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
                     level = 80
 
                 json_payload = json.dumps(
-                    {"brightness": str(round(float(level))), "type": 2}
+                    {"brightness": str(round(float(level))), "type": 2},
+                    separators=(",", ":"),
                 ).encode("utf-8")
                 return (
                     header
