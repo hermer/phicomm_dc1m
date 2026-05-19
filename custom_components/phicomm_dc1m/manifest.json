@@ -1,8 +1,8 @@
 {
   "domain": "phicomm_dc1m",
   "name": "phicomm_dc1m",
-  "documentation": "https://github.com/yinjiong/HomeAssistant/tree/master/custom_components",
-  "codeowners": ["@yinjiong"],
+  "documentation": "https://github.com/hermer/phicomm_dc1m/tree/main/custom_components",
+  "codeowners": ["@hermer"],
   "config_flow": true,
   "iot_class": "local_push",
   "requirements": [],
