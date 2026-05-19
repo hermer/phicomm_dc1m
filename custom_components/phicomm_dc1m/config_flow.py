@@ -108,7 +108,7 @@ class AirCatConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(config_entry) -> OptionsFlow:
         """Get the options flow for this handler."""
-        return AirCatOptionsFlow(config_entry)
+        return AirCatOptionsFlow()
 
     @staticmethod
     def _parse_macs(text: str) -> dict[str, str]:
@@ -150,8 +150,8 @@ class AirCatOptionsFlow(OptionsFlow):
                     },
                 )
 
-        macs = self.config_entry.data.get(CONF_MACS, {})
-        macs_text = "\\n".join(f"{k}={v}" for k, v in macs.items())
+        macs = self.config_entry.options.get(CONF_MACS, self.config_entry.data.get(CONF_MACS, {}))
+        macs_text = "\n".join(f"{k}={v}" for k, v in macs.items())
 
         return self.async_show_form(
             step_id="init",
@@ -159,7 +159,7 @@ class AirCatOptionsFlow(OptionsFlow):
                 {
                     vol.Optional(
                         CONF_NAME,
-                        default=self.config_entry.data.get(CONF_NAME, DEFAULT_NAME),
+                        default=self.config_entry.options.get(CONF_NAME, self.config_entry.data.get(CONF_NAME, DEFAULT_NAME)),
                     ): TextSelector(TextSelectorConfig(type=TextSelectorType.TEXT)),
                     vol.Required(CONF_MACS, default=macs_text): TextSelector(
                         TextSelectorConfig(
@@ -169,12 +169,12 @@ class AirCatOptionsFlow(OptionsFlow):
                     ),
                     vol.Optional(
                         CONF_BFU,
-                        default=self.config_entry.data.get(CONF_BFU, False),
+                        default=self.config_entry.options.get(CONF_BFU, self.config_entry.data.get(CONF_BFU, False)),
                     ): BooleanSelector(BooleanSelectorConfig()),
                     vol.Optional(
                         CONF_SENSOR_TYPES,
-                        default=self.config_entry.data.get(
-                            CONF_SENSOR_TYPES, list(SENSOR_TYPES.keys())
+                        default=self.config_entry.options.get(
+                            CONF_SENSOR_TYPES, self.config_entry.data.get(CONF_SENSOR_TYPES, list(SENSOR_TYPES.keys()))
                         ),
                     ): SelectSelector(
                         SelectSelectorConfig(
