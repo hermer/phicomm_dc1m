@@ -1,13 +1,8 @@
 {
   "domain": "phicomm_dc1m",
   "name": "dc1",
-  "codeowners": ["@yinjiong"],
-  "config_flow": true,
-  "dependencies": [],
   "documentation": "https://github.com/yinjiong/HomeAssistant/tree/master/custom_components",
-  "iot_class": "local_push",
-  "integration_type": "device",
-  "requirements": [],
-  "version": "2026.2.0",
-  "homeassistant": "2026.2.0"
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": []
 }
